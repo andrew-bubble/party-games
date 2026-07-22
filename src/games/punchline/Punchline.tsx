@@ -36,10 +36,15 @@ export default function Punchline({ socket, me, members, game }: GameProps) {
   const [answerInput, setAnswerInput] = useState("");
   const [myAnswer, setMyAnswer] = useState<string | null>(null); // to spot my own card
   const [myVote, setMyVote] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const prevPhase = useRef(phase);
 
   useEffect(() => {
     if (prevPhase.current !== phase) {
+      if (phase === "lobby") {
+        setToast("🎉 New game started!");
+        setTimeout(() => setToast(null), 2500);
+      }
       if (phase === "write") {
         setAnswerInput("");
         setMyAnswer(null);
@@ -107,6 +112,11 @@ export default function Punchline({ socket, me, members, game }: GameProps) {
           </button>
         ) : (
           <p className="text-violet-100/50">Waiting for the host to kick off…</p>
+        )}
+        {toast && (
+          <div className="pointer-events-none fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-fuchsia-500 px-5 py-2 text-white font-semibold shadow-lg opacity-100 transition-opacity">
+            {toast}
+          </div>
         )}
       </div>
     );
